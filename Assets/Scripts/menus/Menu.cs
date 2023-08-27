@@ -6,12 +6,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine.Networking;
-public class Player : MonoBehaviour 
+
+public class Menu : MonoBehaviour
 {
-    public static float speed = 5.5f;
-    public Rigidbody rb;
-    public static float minY = -32;
-    public static float maxY = 128;
+    public GameObject ball;
 
     IEnumerator SetSkinTex(Renderer renderer)
     {
@@ -39,39 +37,13 @@ public class Player : MonoBehaviour
         renderer.material.mainTexture = tex;
     }
 
-    public void Die(string reason="died.")
+    public void Levels()
     {
-        Debug.Log(reason);
-        SceneManager.LoadScene("Scenes/Menus/MainMenu");
-    }
-
-    private void OnTriggerEnter(Collider other) {
-        if(other.gameObject.CompareTag("win")){
-            Debug.Log("win");
-            SceneManager.LoadScene("Scenes/Menus/MainMenu");
-        }
+        SceneManager.LoadScene("Scenes/levels/level0");
     }
 
     private void Start() 
     {
-        StartCoroutine(SetSkinTex(GetComponent<Renderer>()));
-    }
-
-    private void Update() {
-        if(transform.position.y < minY)
-        {  
-            Die("fallen down.");
-        }
-
-        if(transform.position.y > maxY)
-        {  
-            Die("lost in space.");
-        }
-
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-
-        Vector3 movement = new Vector3(h*speed, 0, v*speed);
-        rb.AddForce(movement);
+        StartCoroutine(SetSkinTex(ball.GetComponent<Renderer>()));
     }
 }

@@ -127,6 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 1179349231719160182}
+  img: {fileID: 2800000, guid: 2dc7e2cc0f27b894b88d72e0f138f428, type: 3}
 --- !u!114 &9149645493947487946
 MonoBehaviour:
   m_ObjectHideFlags: 0
