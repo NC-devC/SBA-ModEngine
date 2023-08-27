@@ -37,9 +37,9 @@ public class Menu : MonoBehaviour
         renderer.material.mainTexture = tex;
     }
 
-    public void Levels()
+    public void Levels(int id)
     {
-        SceneManager.LoadScene("Scenes/levels/level0");
+        SceneManager.LoadScene("Scenes/levels/level"+id);
     }
 
     private void Start() 
