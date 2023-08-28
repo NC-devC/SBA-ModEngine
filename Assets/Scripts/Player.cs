@@ -11,7 +11,8 @@ public class Player : MonoBehaviour
     public static float speed = 5.5f;
     public Rigidbody rb;
     public static float minY = -32;
-    public static float maxY = 128;
+    public static float maxY = 256;
+    public FixedJoystick joystick;
 
     IEnumerator SetSkinTex(Renderer renderer)
     {
@@ -54,6 +55,20 @@ public class Player : MonoBehaviour
 
     private void Start() 
     {
+        try
+        {
+            if(Build.mobile == true)
+            {
+                joystick.gameObject.active = true;
+            }
+            else
+            {
+                joystick.gameObject.active = false;
+            }
+        }
+        catch 
+        {
+        }
         StartCoroutine(SetSkinTex(GetComponent<Renderer>()));
     }
 
@@ -68,10 +83,19 @@ public class Player : MonoBehaviour
             Die("lost in space.");
         }
 
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
+        if(Build.mobile == true)
+        {
+            float h = joystick.Horizontal;
+            float v = joystick.Vertical;
 
-        Vector3 movement = new Vector3(h*speed, 0, v*speed);
-        rb.AddForce(movement);
+            Vector3 movement = new Vector3(h*speed, 0, v*speed);
+            rb.AddForce(movement);
+        }
+
+        float hI = Input.GetAxis("Horizontal");
+        float vI = Input.GetAxis("Vertical");
+
+        Vector3 movementI = new Vector3(hI*speed, 0, vI*speed);
+        rb.AddForce(movementI);
     }
 }

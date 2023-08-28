@@ -8,6 +8,7 @@ public class IntroScript : MonoBehaviour
     private void Start()
     {
         //В будущем тут будет загрузка модов ваще круто
+        Build.prepare();
         SceneManager.LoadScene("Scenes/Menus/MainMenu");
     }
 }
