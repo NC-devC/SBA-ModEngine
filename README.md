@@ -28,8 +28,8 @@ Change any image or sound.
 
 Anything you want.
 
-# Музыка в игре:
+# Music in game:
 
-Стандартная: the fat rat - unity
+Default: the fat rat - unity
 
 Original game: https://gamejolt.com/games/stone_ball_adventure/634715
