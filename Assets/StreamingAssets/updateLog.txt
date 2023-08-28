@@ -1,0 +1,16 @@
+0.1.1 PRE-RELEASE:
+RU:
+Музыка.
+Минимальная поддержка кастомной музыки.
+Незначительное изменение камеры.
+EN:
+Music.
+Minimal support of custom music.
+
+0.1.0 PRE-RELEASE:
+RU:
+3 тестовых уровня.
+Минимальная поддержка кастомных скинов.
+EN:
+3 test levels
+Minimal support of custom skins.
