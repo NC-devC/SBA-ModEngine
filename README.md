@@ -6,6 +6,8 @@
 # Что вы можете сделать сейчас без исходного кода?
 
 Изменить любую картинку, или звук.
+Делать свои уровни.
+LUA скриптинг
 
 # Что вы можете сделать сейчас с исходным кодом?
 
@@ -23,6 +25,8 @@ Fanmade of Stone Ball Adventure that supports mods.
 # What you can do without source code?
 
 Change any image or sound.
+Make custom levels
+LUA scripting
 
 # What you can do with source code?
 
