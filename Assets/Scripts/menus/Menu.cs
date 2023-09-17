@@ -53,6 +53,10 @@ public class Menu : MonoBehaviour
     {
         SceneManager.LoadScene("Scenes/levels/level"+id);
     }
+    public void LuaLevel()
+    {
+        SceneManager.LoadScene("Scenes/lua/lualevel");
+    }
 
     private void Start() 
     {
