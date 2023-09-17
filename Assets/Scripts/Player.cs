@@ -13,6 +13,7 @@ public class Player : MonoBehaviour
     public static float minY = -32;
     public static float maxY = 256;
     public FixedJoystick joystick;
+    public bool isLuaLevel = false;
 
     IEnumerator SetSkinTex(Renderer renderer)
     {
@@ -43,12 +44,20 @@ public class Player : MonoBehaviour
     public void Die(string reason="died.")
     {
         Debug.Log(reason);
+        if(isLuaLevel)
+        {
+            LuaLevel.OnDie();
+        }
         SceneManager.LoadScene("Scenes/Menus/MainMenu");
     }
 
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.CompareTag("win")){
             Debug.Log("win");
+            if(isLuaLevel)
+            {
+                LuaLevel.OnWin();
+            }
             SceneManager.LoadScene("Scenes/Menus/MainMenu");
         }
     }

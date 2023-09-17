@@ -10,6 +10,8 @@ using UnityEngine.Networking;
 public class Menu : MonoBehaviour
 {
     public GameObject ball;
+    public Canvas menuCanvas;
+    public Canvas levelsCanvas;
 
     IEnumerator SetSkinTex(Renderer renderer)
     {
@@ -35,6 +37,16 @@ public class Menu : MonoBehaviour
         tex.LoadImage(imgData);
 
         renderer.material.mainTexture = tex;
+    }
+
+    public void ToLevels(){
+        levelsCanvas.gameObject.active = true;
+        menuCanvas.gameObject.active = false;
+    }
+
+    public void ToMenu(){
+        levelsCanvas.gameObject.active = false;
+        menuCanvas.gameObject.active = true;
     }
 
     public void Levels(int id)
