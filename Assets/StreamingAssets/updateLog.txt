@@ -4,6 +4,12 @@ https://github.com/NC-devC/SBA-ModEngine
 Gamejolt:
 https://gamejolt.com/games/sbamodengine/835843
 
+0.3.0:
+RU:
+Поддержка смены цветов объекта
+Возможность создать объект проигрыша
+Возможность создания текста на экране пользователя.
+
 0.2.0 DEV-BUILD:
 RU:
 Базовая поддержка ЯП LUA

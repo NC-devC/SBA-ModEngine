@@ -15,8 +15,11 @@ public class LuaLevel : MonoBehaviour
     bool canCallES = true;
 
     public SceneAPI sa;
+    public GuiAPI gui;
 
     public GameObject winPart;
+    public GameObject diePart;
+    public Canvas luaCanvas;
 
     public int sceneTime = 0;
 
@@ -42,6 +45,9 @@ public class LuaLevel : MonoBehaviour
     {
         script.Globals["print"] = (Func<string, string>)log;
         script.Globals["sa"] = sa;
+        script.Globals["sceneApi"] = sa;
+        script.Globals["gui"] = gui;
+        script.Globals["guiApi"] = gui;
     }
 
     public void prepareScripts()
@@ -156,6 +162,10 @@ public class LuaLevel : MonoBehaviour
     {
         sa = new SceneAPI();
         sa.winPartPrefab = winPart;
+        sa.diePartPrefab = diePart;
+
+        gui = new GuiAPI(luaCanvas);
+
         sceneTime = 0;
         prepareScripts();
         OnCreateLua();

@@ -60,6 +60,14 @@ public class Player : MonoBehaviour
             }
             SceneManager.LoadScene("Scenes/Menus/MainMenu");
         }
+        if(other.gameObject.CompareTag("die")){
+            Debug.Log("die");
+            if(isLuaLevel)
+            {
+                LuaLevel.OnDie();
+            }
+            SceneManager.LoadScene("Scenes/Menus/MainMenu");
+        }
     }
 
     private void Start() 
