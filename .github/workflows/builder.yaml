@@ -19,6 +19,7 @@ jobs:
         unityVersion:
           - 2023.2.3f1
         targetPlatform:
+          - Android # Build an Android app.
           - StandaloneWindows64 # Build a Windows 64-bit standalone.
 
     steps:
@@ -44,52 +45,7 @@ jobs:
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          buildName: 'GameCI Test Build'
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-          targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
-          allowDirtyBuild: true
-
-      - name: Sleep for Retry
-        if: ${{ steps.build-1.outcome == 'failure' }}
-        run: |
-          Start-Sleep -s 120
-
-      - name: Build Retry 1
-        uses: ./
-        id: build-2
-        continue-on-error: true
-        timeout-minutes: 30
-        if: steps.build-1.outcome == 'failure'
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          buildName: 'GameCI Test Build'
-          projectPath: ${{ matrix.projectPath }}
-          unityVersion: ${{ matrix.unityVersion }}
-          targetPlatform: ${{ matrix.targetPlatform }}
-          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
-          allowDirtyBuild: true
-
-      - name: Sleep for Retry
-        if: ${{ steps.build-1.outcome == 'failure' && steps.build-2.outcome == 'failure' }}
-        run: |
-          Start-Sleep -s 240
-
-      - name: Build Retry 2
-        uses: ./
-        id: build-3
-        timeout-minutes: 30
-        if: ${{ steps.build-1.outcome == 'failure' && steps.build-2.outcome == 'failure' }}
-        env:
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-        with:
-          buildName: 'GameCI Test Build'
+          buildName: 'SBA Mod Engine'
           projectPath: ${{ matrix.projectPath }}
           unityVersion: ${{ matrix.unityVersion }}
           targetPlatform: ${{ matrix.targetPlatform }}
