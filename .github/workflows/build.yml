@@ -6,8 +6,21 @@ jobs:
     build:
       name: Build game
       runs-on: windows-latest
+      strategy:
+          fail-fast: false
+          matrix:
+            projectPath:
+              - project
+            unityVersion:
+              - 2021.3.32f1
+              - 2022.3.13f1
+              - 2023.2.2f1
+            targetPlatform:
+              - Android # Build an Android apk.
+              - StandaloneWindows64 # Build a Windows 64-bit standalone.
       steps:
           - name: Checkout
             uses: actions/checkout@v4
           - name: Build
             uses: game-ci/unity-builder@v4.2.3
+    
