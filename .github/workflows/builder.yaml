@@ -19,7 +19,6 @@ jobs:
         unityVersion:
           - 2023.2.3f1
         targetPlatform:
-          - Android # Build an Android app.
           - StandaloneWindows64 # Build a Windows 64-bit standalone.
 
     steps:
