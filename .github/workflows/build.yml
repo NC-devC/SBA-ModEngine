@@ -1,26 +1,103 @@
-name: Build Game
-run-name: Make build of the game
-on: [workflow_dispatch]
-  
+name: Build project
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-    build:
-      name: Build game
-      runs-on: windows-latest
-      strategy:
-          fail-fast: false
-          matrix:
-            projectPath:
-              - project
-            unityVersion:
-              - 2021.3.32f1
-              - 2022.3.13f1
-              - 2023.2.2f1
-            targetPlatform:
-              - Android # Build an Android apk.
-              - StandaloneWindows64 # Build a Windows 64-bit standalone.
-      steps:
-          - name: Checkout
-            uses: actions/checkout@v4
-          - name: Build
-            uses: game-ci/unity-builder@v4.2.3
-    
+  buildForAllPlatformsWindows:
+    name: ${{ matrix.targetPlatform }} on ${{ matrix.unityVersion }}
+    runs-on: windows-2022
+    strategy:
+      fail-fast: false
+      matrix:
+        projectPath:
+          - project
+        unityVersion:
+          - 2023.2.3f1
+        targetPlatform:
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - uses: actions/cache@v4
+        with:
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}-windows-${{ matrix.targetPlatform }}
+          restore-keys: |
+            Library-${{ matrix.projectPath }}-windows-
+            Library-
+
+      - name: Build
+        uses: ./
+        id: build-1
+        continue-on-error: true
+        timeout-minutes: 30
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          buildName: 'GameCI Test Build'
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
+          allowDirtyBuild: true
+
+      - name: Sleep for Retry
+        if: ${{ steps.build-1.outcome == 'failure' }}
+        run: |
+          Start-Sleep -s 120
+
+      - name: Build Retry 1
+        uses: ./
+        id: build-2
+        continue-on-error: true
+        timeout-minutes: 30
+        if: steps.build-1.outcome == 'failure'
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          buildName: 'GameCI Test Build'
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
+          allowDirtyBuild: true
+
+      - name: Sleep for Retry
+        if: ${{ steps.build-1.outcome == 'failure' && steps.build-2.outcome == 'failure' }}
+        run: |
+          Start-Sleep -s 240
+
+      - name: Build Retry 2
+        uses: ./
+        id: build-3
+        timeout-minutes: 30
+        if: ${{ steps.build-1.outcome == 'failure' && steps.build-2.outcome == 'failure' }}
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
+        with:
+          buildName: 'GameCI Test Build'
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
+          allowDirtyBuild: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Build ${{ matrix.targetPlatform }} on Windows (${{ matrix.unityVersion }})
+          path: build
+          retention-days: 14
