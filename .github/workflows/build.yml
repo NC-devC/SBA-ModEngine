@@ -1,7 +1,13 @@
-on:
-  workflow_dispatch:
+name: Build Game
+run-name: Make build of the game
+on: [workflow_dispatch]
   
 jobs:
     build:
       name: Build game
       runs-on: windows-latest
+      steps:
+          - name: Checkout
+            uses: actions/checkout@v4
+          - name: Build
+            uses: game-ci/unity-builder@v4.2.3
