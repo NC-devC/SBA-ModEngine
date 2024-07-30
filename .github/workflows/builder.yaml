@@ -3,46 +3,57 @@ name: Build project
 on:
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  buildWindows:
-    name: Build for Windows 🖥️
-    runs-on: ubuntu-latest
+  buildForAllPlatformsWindows:
+    name: ${{ matrix.targetPlatform }} on ${{ matrix.unityVersion }}
+    runs-on: windows-2022
     strategy:
       fail-fast: false
+      matrix:
+        projectPath:
+          - project
+        unityVersion:
+          - 2023.2.3f1
+        targetPlatform:
+          - Android # Build an Android app.
+          - StandaloneWindows64 # Build a Windows 64-bit standalone.
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
-      - name: Restore LFS cache
-        uses: actions/cache@v4
-        id: lfs-cache
+      - uses: actions/checkout@v4
         with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+          lfs: true
 
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
-
-      - name: Restore Library cache
-        uses: actions/cache@v4
+      - uses: actions/cache@v4
         with:
-          path: Library
-          key: Library-build-StandaloneWindows64
+          path: ${{ matrix.projectPath }}/Library
+          key: Library-${{ matrix.projectPath }}-windows-${{ matrix.targetPlatform }}
           restore-keys: |
-            Library-build-
+            Library-${{ matrix.projectPath }}-windows-
             Library-
 
-      - uses: game-ci/unity-builder@v4.2.3
+      - name: Build
+        uses: ./
+        id: build-1
+        continue-on-error: true
+        timeout-minutes: 30
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
         with:
-          targetPlatform: StandaloneWindows64
+          buildName: 'SBA Mod Engine'
+          projectPath: ${{ matrix.projectPath }}
+          unityVersion: ${{ matrix.unityVersion }}
+          targetPlatform: ${{ matrix.targetPlatform }}
+          customParameters: -profile SomeProfile -someBoolean -someValue exampleValue
+          allowDirtyBuild: true
 
-      - uses: actions/upload-artifact@4.3.4
+      - uses: actions/upload-artifact@v4
         with:
-          name: build-StandaloneWindows64
-          path: build/StandaloneWindows64
+          name: Build ${{ matrix.targetPlatform }} on Windows (${{ matrix.unityVersion }})
+          path: build
+          retention-days: 14
